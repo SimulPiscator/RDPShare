@@ -138,7 +138,7 @@ Sharer::Start(int maxAttendees)
 
 	ComPtr<IRDPSRAPISessionProperties> pProperties;
 	hr = p->mpSession->get_Properties(&pProperties);
-	hr = pProperties->put_Property(BStr(L"DrvConAttach"), Variant(false));
+	hr = pProperties->put_Property(BStr(L"DrvConAttach"), Variant(true));
 	hr = pProperties->put_Property(BStr(L"PortProtocol"), Variant(AF_INET));
 	hr = pProperties->put_Property(BStr(L"PortId"), Variant(p->mPort));
 

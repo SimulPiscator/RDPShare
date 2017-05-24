@@ -27,22 +27,11 @@ static const struct
 static std::string HtmlLink(const std::string& text, const std::string& target, bool enabled);
 static std::string ClientScript(const std::string& ip, const std::string& raport, int httpport);
 
-static const char* license =
-"RDPShare is free software: you can redistribute it and/or modify\n"
-"it under the terms of the GNU General Public License as published by\n"
-"the Free Software Foundation, either version 3 of the License, or\n"
-"(at your option) any later version.\n\n""
-"RDPShare is distributed in the hope that it will be useful,\n"
-"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-"GNU General Public License for more details.\n\n"
-"You should have received a copy of the GNU General Public License\n"
-"along with RDPShare.  If not, see <http://www.gnu.org/licenses/>.\n";
-
 static const char* usage =
-"Usage:\tRDPShare [http <port>] [rdp <port>] [screen {0..n}]\n"
-"Defaults are: http 8080 rdp 3390 screen 0\n\n"
-"Use a web browser to connect to the http port for additional options.\n"
+"Usage:\tRDPShare [idle] [http <port>] [rdp <port>] [screen {0..n}]\n"
+"Defaults are: http 8080 rdp 3390 screen 0\n"
+"A WDS session is started automatically, unless the \"idle\" option has been given.\n\n"
+"Use a web browser to connect to the HTTP port for additional options.\n"
 "In addition, the following requests are recognized when when sent to the HTTP port:\n"
 " start: start WDS session\n"
 " stop: stop WDS session\n"
@@ -57,7 +46,7 @@ CALLBACK WinMain(HINSTANCE, HINSTANCE, char* inArgs, int)
 	std::string command = GetProgramName() + " " + inArgs;
 
 	unsigned short http = 8080, rdp = 3390, screen = 0;
-    bool help = false;
+	bool help = false, idle = false;
 
 	std::istringstream iss(inArgs);
 	std::string token, error;
@@ -69,6 +58,8 @@ CALLBACK WinMain(HINSTANCE, HINSTANCE, char* inArgs, int)
 			;
 		else if (token == "screen" && iss >> screen)
 			;
+		else if (token == "idle")
+			idle = true;
 		else if (token == "/?" || token.find("help") != std::string::npos)
 			help = true;
 		else
@@ -76,10 +67,7 @@ CALLBACK WinMain(HINSTANCE, HINSTANCE, char* inArgs, int)
 	}
 	if(help)
 	{
-        std::string helptext = license;
-        helptext += "\n";
-        helptext += usage;
-        ::MessageBoxA(NULL, helptext.c_str(), command.c_str(), MB_OK);
+        ::MessageBoxA(NULL, usage, command.c_str(), MB_OK);
 		return 0;
 	}
 	else if(!error.empty())
@@ -235,7 +223,8 @@ CALLBACK WinMain(HINSTANCE, HINSTANCE, char* inArgs, int)
 		server.httpport = http;
 		server.screen = screen;
 		server.pSharer = &sharer;
-		server.Start();
+		if(!idle)
+	  		server.Start();
 		result = server.Run();
 	}
  	catch (HR_SucceedOrDie hr)
