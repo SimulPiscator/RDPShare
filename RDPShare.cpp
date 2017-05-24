@@ -43,8 +43,10 @@ static const char* usage =
 "Usage:\tRDPShare [http <port>] [rdp <port>] [screen {0..n}]\n"
 "Defaults are: http 8080 rdp 3390 screen 0\n\n"
 "Use a web browser to connect to the http port for additional options.\n"
-"In addition, the following requests are recognized when when sent to the http port:\n"
-" quit: exit serverprocess\n"
+"In addition, the following requests are recognized when when sent to the HTTP port:\n"
+" start: start WDS session\n"
+" stop: stop WDS session\n"
+" quit: exit server process\n"
 " get_ConnectionString: get WDS connection string\n"
 " get_RASessionID: get Remote Assistance session ID\n"
 " get_SharedRect: get shared rect\n";
