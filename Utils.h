@@ -122,6 +122,7 @@ std::string StringReplace(const std::string& what, const std::string& with, cons
 std::string GetErrorText(DWORD);
 std::string GetProgramName();
 bool GetScreenRect(unsigned int screen, RECT* pRect);
+int SetScreenSize(unsigned int screen, int width, int height);
 std::string UrlEscape_(const std::string& in, const std::string& allow = "");
 
 #endif // UTILS_H

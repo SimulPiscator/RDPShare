@@ -94,6 +94,43 @@ GetScreenRect(unsigned int screen, RECT* pRect)
 	return monitorEnum.count == 0;
 }
 
+int
+SetScreenSize(unsigned int screen, int width, int height)
+{
+	if (screen == 0)
+		return false;
+	struct MonitorEnum
+	{
+		static BOOL CALLBACK Proc(HMONITOR hMonitor, HDC, LPRECT, LPARAM pData)
+		{
+			MonitorEnum* this_ = (MonitorEnum*)pData;
+			if (--this_->count == 0)
+			{
+				MONITORINFOEXA info = {};
+				info.cbSize = sizeof(MONITORINFOEXA);
+				if (::GetMonitorInfoA(hMonitor, &info))
+				{
+					DEVMODEA mode = {};
+					mode.dmSize = sizeof(DEVMODEA);
+					if(::EnumDisplaySettingsA(info.szDevice, ENUM_CURRENT_SETTINGS, &mode))
+					{
+						mode.dmPelsWidth = this_->width;
+						mode.dmPelsHeight = this_->height;
+						this_->result = ::ChangeDisplaySettingsExA(info.szDevice, &mode, NULL, 0, NULL);
+					}
+				}
+				return FALSE;
+			}
+			return TRUE;
+		}
+		unsigned int count;
+		int width, height;
+		int result;
+	} monitorEnum = { screen, width, height, DISP_CHANGE_BADPARAM };
+	::EnumDisplayMonitors(NULL, nullptr, &MonitorEnum::Proc, (LPARAM)&monitorEnum);
+	return monitorEnum.result;
+}
+
 std::string UrlEscape_(const std::string& in, const std::string& allow)
 {
 	std::string out;

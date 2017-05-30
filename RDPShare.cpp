@@ -36,6 +36,7 @@ static const char* usage =
 " start: start WDS session\n"
 " stop: stop WDS session\n"
 " quit: exit server process\n"
+" set_Resolution: set screen resolution\n"
 " get_ConnectionString: get WDS connection string\n"
 " get_RASessionID: get Remote Assistance session ID\n"
 " get_SharedRect: get shared rect\n";
@@ -97,6 +98,8 @@ CALLBACK WinMain(HINSTANCE, HINSTANCE, char* inArgs, int)
 					response = sharedRect;
 				else if (s == "get_RASessionID")
 					response = raInfo.SessionID;
+				else if (s.find("set_ScreenSize") == 0)
+					response = OnSetScreenSize(s.substr(::strlen("set_ScreenSize")));
 				else if (s.find("GET /") == 0)
 					response = OnHttpGet( s.substr(::strlen("GET /")));
 				else
@@ -155,6 +158,49 @@ CALLBACK WinMain(HINSTANCE, HINSTANCE, char* inArgs, int)
 				sharedRect.clear();
 				connectionString.clear();
 				pSharer->Stop();
+			}
+			std::string OnSetScreenSize(const std::string s)
+			{
+				std::string screen, size;
+				std::istringstream iss(s);
+				iss >> screen >> size;
+				if (size.empty())
+				{
+					size = screen;
+					screen = "1";
+				}
+				int width = -1, height = -1, screenIdx = ::atoi(screen.c_str());
+				size_t pos = size.find('x');
+				if (pos < size.length())
+				{
+					width = ::atoi(size.c_str());
+					height = ::atoi(size.c_str() + pos + 1);
+				}
+				if (width < 0 || height < 0)
+					return "error: bad format: " + s + "\n";
+				if (screenIdx == 0)
+					return "error: cannot set desktop size, specify a screen > 0\n";
+				RECT r;
+				if (!GetScreenRect(screenIdx, &r))
+					return "error: unknown screen " + screen + " \n";
+				int result = SetScreenSize(screenIdx, width, height);
+				std::string message = "error: could not set screen size";
+				switch (result)
+				{
+				case DISP_CHANGE_SUCCESSFUL:
+					message = "ok";
+					break;
+#define _(x)	case x: message += " (" #x ")"; break;
+					_(DISP_CHANGE_BADDUALVIEW)
+					_(DISP_CHANGE_BADFLAGS)
+					_(DISP_CHANGE_BADMODE)
+					_(DISP_CHANGE_BADPARAM)
+					_(DISP_CHANGE_FAILED)
+					_(DISP_CHANGE_RESTART)
+					_(DISP_CHANGE_NOTUPDATED)
+#undef _
+				}
+				return message + "\n";
 			}
 			std::string OnHttpGet( const std::string s)
 			{
