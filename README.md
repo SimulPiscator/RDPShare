@@ -21,7 +21,7 @@ and a simple client connection script is offered for download.
 
 ## Usage
 
-<pre>RDPShare [http <port>] [rdp <port>] [screen {0..n}]</pre>
+<pre>RDPShare [http &lt;port&gt;] [rdp &lt;port&gt;] [screen {0..n}]</pre>
 
 Defaults are: http 8080 rdp 3390 screen 0
 
