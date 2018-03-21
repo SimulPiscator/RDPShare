@@ -323,7 +323,7 @@ static std::string ClientScript(const std::string& ip, const std::string& raport
 	"send_command stop > /dev/null\n"
 	"send_command start > /dev/null\n"
 	"APP=xfreerdp\n"
-	"OPTIONS=\"/f /cert-ignore -encryption +compression\"\n"
+	"OPTIONS=\"/f /cert-ignore -sec-nla -encryption +compression\"\n"
 	"SESSIONID=`send_command get_RASessionID`\n"
 	"exec $APP /v:" << ip << ":" << raport << " /shell-dir:$SESSIONID $OPTIONS\n"
 	;
