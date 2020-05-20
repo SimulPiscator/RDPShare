@@ -28,7 +28,7 @@ Defaults are: http 8080 rdp 3390 screen 0
 The "screen" option allows choosing which part of the Windows desktop is shared.
 For "screen 0", the entire Windows desktop is shared; for arguments greater 0, only the area of the respective display is shared.
 
-The following requests are recognized when when sent to the HTTP port:
+In addition to HTTP GET requests, the following requests are recognized when when sent to the HTTP port:
 * start: start WDS session
 * stop: stop WDS session
 * quit: exit RDAShare process
