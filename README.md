@@ -22,9 +22,12 @@ and a simple client connection script is offered for download.
 
 ## Usage
 
-<pre>RDPShare [http &lt;port&gt;] [rdp &lt;port&gt;] [screen {0..n}]</pre>
+<pre>RDPShare [idle] [http &lt;port&gt;] [rdp &lt;port&gt;] [screen {0..n}]</pre>
 
 Defaults are: http 8080 rdp 3390 screen 0
+
+If the "idle" option is given, RDPShare does not start a WDS session at startup but waits for the "start" request
+before initiating one (see below).
 
 The "screen" option allows to choose which part of the Windows desktop is shared.
 For "screen 0", the entire Windows desktop is shared; for arguments greater 0, only the area of the respective display is shared.
