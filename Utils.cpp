@@ -58,8 +58,9 @@ std::string GetProgramName()
 {
 	char buf1[MAX_PATH + 1];
 	::GetModuleFileNameA(NULL, buf1, sizeof(buf1));
-	std::vector<char> buf2(::GetLongPathNameA(buf1, nullptr, 0));
-	::GetLongPathNameA(buf1, buf2.data(), buf2.size());
+	int length = ::GetLongPathNameA(buf1, nullptr, 0);
+	std::vector<char> buf2(length);
+	::GetLongPathNameA(buf1, buf2.data(), length);
 	const char* begin = ::PathFindFileNameA(buf2.data()), *end = ::PathFindExtensionA(begin);
 	return std::string(begin, end - begin);
 }

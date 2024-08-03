@@ -153,7 +153,7 @@ Server::Terminate()
 void
 Server::Private::Send(SOCKET s, const std::string& data)
 {
-	int remaining = data.length();
+	int remaining = static_cast<int>(data.length());
 	const char* p = data.c_str();
 	while (remaining > 0)
 	{
@@ -161,7 +161,7 @@ Server::Private::Send(SOCKET s, const std::string& data)
 		FD_ZERO(&writefds);
 		FD_SET(s, &writefds);
 		timeval t = { 1, 0 };
-		WSA_SucceedOrDie r = ::select(s + 1, nullptr, &writefds, nullptr, &t);
+		WSA_SucceedOrDie r = ::select(static_cast<int>(s) + 1, nullptr, &writefds, nullptr, &t);
 		if (FD_ISSET(s, &writefds))
 			r = ::send(s, p, remaining, 0);
 		else
@@ -183,7 +183,7 @@ Server::Private::Receive(SOCKET s)
 		FD_ZERO(&readfds);
 		FD_SET(s, &readfds);
 		timeval t = { 20, 0 };
-		WSA_SucceedOrDie r = ::select(s + 1, &readfds, nullptr, nullptr, &t);
+		WSA_SucceedOrDie r = ::select(static_cast<int>(s) + 1, &readfds, nullptr, nullptr, &t);
 		if (FD_ISSET(s, &readfds))
 			r = ::recv(s, &c, 1, 0);
 		if (c == '\n')

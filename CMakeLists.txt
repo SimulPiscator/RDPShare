@@ -16,10 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with RDPShare.  If not, see <http://www.gnu.org/licenses/>.
 #
-cmake_minimum_required( VERSION 3.0 )
-cmake_policy( VERSION 3.0 )
+cmake_minimum_required( VERSION 3.5 )
+cmake_policy( VERSION 3.5 )
 
-project( RDPShare VERSION 0.1.0 )
+project( RDPShare VERSION 0.1.1 )
 
 add_definitions( -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE )
 foreach(flag_var
@@ -45,5 +45,7 @@ add_executable( RDPShare WIN32
 	RDPFile.h
 	Server.cpp
 	Server.h
+	RDPShareServer.cpp
+	RDPShareServer.h
 )
 target_link_libraries( RDPShare ws2_32 shlwapi )

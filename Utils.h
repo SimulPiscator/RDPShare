@@ -81,9 +81,10 @@ public:
 		std::string s;
 		if (data)
 		{
-			s.resize(::WideCharToMultiByte(CP_UTF8, 0, data, -1, 0, 0, 0,0));
-			::WideCharToMultiByte(CP_UTF8, 0, data, -1, const_cast<char*>(s.data()), s.size(), 0, 0);
-			if(s.size()>0)
+			int size = ::WideCharToMultiByte(CP_UTF8, 0, data, -1, 0, 0, 0, 0);
+			s.resize(size);
+			::WideCharToMultiByte(CP_UTF8, 0, data, -1, const_cast<char*>(s.data()), size, 0, 0);
+			if (s.size() > 0)
 				s.resize(s.size() - 1);
 		}
 		return s;
@@ -91,8 +92,9 @@ public:
 	BStr& FromUtf8(const std::string& s)
 	{
 		::SysFreeString(data);
-		std::vector<wchar_t> buf(::MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, 0, 0));
-		::MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, buf.data(), buf.size());
+		int size = ::MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, 0, 0);
+		std::vector<wchar_t> buf(size);
+		::MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, buf.data(), size);
 		data = ::SysAllocString(buf.data());
 		return *this;
 	}
